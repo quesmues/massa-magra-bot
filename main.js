@@ -41,6 +41,9 @@ client.on('message', message => {
   } else if (message.content.startsWith(`${prefix}clear`)) {
     clear(message, serverQueue);
     return;
+  } else if (message.content.startsWith(`${prefix}fila`)) {
+    fila(message, serverQueue);
+    return;
   }
 });
 
@@ -114,29 +117,47 @@ async function execute(message, serverQueue) {
 
 function next(message, serverQueue) {
 	if (!message.member.voice.channel) return message.channel.send('Você precisa estar em um canal de voz para eu poder tocar a música!');
-  if (!serverQueue) return message.channel.send('Não tem nada na fila para parar!');
+  if (!serverQueue) return message.channel.send('Fila está vazia!');
 	serverQueue.connection.dispatcher.end();
 }
 
 function clear(message, serverQueue) {
-	if (!message.member.voice.channel) return message.channel.send('Você precisa estar em um canal de voz para eu poder tocar a música!');
+  if (!message.member.voice.channel) return message.channel.send('Você precisa estar em um canal de voz para eu poder tocar a música!');
+  if (!serverQueue) return message.channel.send('Fila está vazia!');
 	serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
 }
 
+function fila(message, serverQueue) {
+  if (serverQueue){
+    if(!serverQueue.songs) return message.channel.send('Fila está vazia!');
+    message.channel.send(`A fila possui ${serverQueue.songs.length} músicas!`);
+    serverQueue.songs.forEach(function(item, index){
+      message.channel.send(item.title);
+    });
+  } else {
+    return message.channel.send('Fila está vazia!');
+  }
+}
+
 function play(guild, song) {
   const serverQueue = queue.get(guild.id);
+  const channel_musicas = guild.channels.cache.find(ch => ch.name === 'musicas');
   console.log("Tocando")
 
 	if (!song) {
+    channel_musicas.send(`Nenhuma música na fila!\nVamo no BK!!!!!!!!!`);
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
-	}
+  }
+
+  channel_musicas.send(`Está tocando ${song.title}!`);
 
 	const dispatcher = serverQueue.connection.play(ytdl(song.url))
 		.on('finish', () => {
-			console.log('Music ended!');
+      console.log('Music ended!');
+      channel_musicas.send(`Musica ${song.title} terminou!`);
 			serverQueue.songs.shift();
 			play(guild, serverQueue.songs[0]);
 		})
@@ -145,6 +166,7 @@ function play(guild, song) {
 		});
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 }
+
 
 
 client.login(process.env.BOT_TOKEN);

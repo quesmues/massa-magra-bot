@@ -39,4 +39,4 @@ client.on('guildMemberAdd', member => {
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login(`${token}`);
+client.login(process.env.BOT_TOKEN);

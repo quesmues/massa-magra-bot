@@ -5,8 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "discord.js": "^12.2.0",
-    "ffmpeg": "",
-    "ffmpeg-static": "",
+    "ffmpeg-binaries": "",
     "opusscript": "0.0.7",
     "ytdl-core": "^3.2.0"
   },

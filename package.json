@@ -5,7 +5,6 @@
   "main": "main.js",
   "dependencies": {
     "discord.js": "^12.2.0",
-    "lzma-native": "^1.0.3",
     "ffmpeg": "",
     "ffmpeg-static": "",
     "opusscript": "0.0.7",

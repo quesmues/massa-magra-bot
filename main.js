@@ -82,7 +82,7 @@ async function execute(message, serverQueue) {
     if (!serverQueue) {
       const queueContruct = {
         textChannel: message.channel,
-        voiceChannel: voiceChannel,
+        voiceChannel,
         connection: null,
         songs: [],
         volume: 5,
